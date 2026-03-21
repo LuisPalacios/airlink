@@ -25,11 +25,7 @@
     <PackageReference Include="Vanara.PInvoke.CoreAudio" Version="5.0.1" />
   </ItemGroup>
 
-  <!-- Embed git version info (tag + short hash) into the assembly -->
-  <PropertyGroup>
-    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-  </PropertyGroup>
+  <!-- Generate GitVersionInfo.cs with version from git describe -->
   <Target Name="SetGitVersion" BeforeTargets="CoreCompile">
     <Exec Command="git describe --tags --always --dirty" ConsoleToMsBuild="true" StandardOutputImportance="low" IgnoreExitCode="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitVersion" />
@@ -37,10 +33,10 @@
     <PropertyGroup>
       <GitVersion Condition="'$(GitVersion)' == ''">dev</GitVersion>
     </PropertyGroup>
+    <WriteLinesToFile File="$(IntermediateOutputPath)GitVersionInfo.cs" Overwrite="true"
+      Lines="namespace AirLink%3B&#10;internal static class GitVersionInfo { internal const string Version = &quot;$(GitVersion)&quot;%3B }" />
     <ItemGroup>
-      <AssemblyAttribute Include="System.Reflection.AssemblyInformationalVersionAttribute">
-        <_Parameter1>$(GitVersion)</_Parameter1>
-      </AssemblyAttribute>
+      <Compile Include="$(IntermediateOutputPath)GitVersionInfo.cs" />
     </ItemGroup>
   </Target>
 

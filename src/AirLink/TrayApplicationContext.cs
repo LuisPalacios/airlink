@@ -1,4 +1,3 @@
-using System.Reflection;
 using AirLink.Services;
 
 namespace AirLink;
@@ -265,9 +264,7 @@ public sealed class TrayApplicationContext : ApplicationContext
 
     private void OnHelpClicked(object? sender, EventArgs e)
     {
-        var version = typeof(TrayApplicationContext).Assembly
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-            ?.InformationalVersion ?? "unknown";
+        var version = GitVersionInfo.Version;
 
         MessageBox.Show(
             "AirLink simplifies Bluetooth audio connectivity on Windows.\n" +
