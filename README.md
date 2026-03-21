@@ -32,13 +32,6 @@ Connecting AirPods on Windows means `Settings > Bluetooth > Connect` — every s
 | [Developer Guide](docs/developer-guide.md) | Build from source |
 | [Why AirLink](docs/why-airlink.md) | Why did I do this |
 
-## Build
-
-```shell
-dotnet publish src/AirLink/AirLink.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true
-```
-
-Output: `src/AirLink/bin/Release/net10.0-windows10.0.19041.0/win-x64/publish/AirLink.exe`
 
 ## License
 
