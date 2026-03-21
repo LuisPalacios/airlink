@@ -37,6 +37,7 @@ Right-click the tray icon to access these options:
 | **Help** | Shows app information, author, and GitHub link |
 | **Select Device** | Choose which paired Bluetooth device to connect |
 | **Shortcut** | Configure a global keyboard shortcut to toggle connection |
+| **Notifications** | Toggle balloon tip notifications on connect/disconnect |
 | **Run at Startup** | Toggle whether AirLink starts automatically with Windows |
 | **Exit** | Closes AirLink completely |
 
