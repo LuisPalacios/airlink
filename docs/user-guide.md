@@ -65,6 +65,12 @@ On first launch, AirLink automatically registers itself to start with Windows. Y
 
 ## Troubleshooting
 
+### Notifications stay too long
+
+AirLink shows brief notifications when connecting or disconnecting. The duration is controlled by Windows, not AirLink. To change it, go to **Settings > Accessibility > Visual effects** and adjust "Dismiss notifications after this amount of time."
+
+You can also disable AirLink notifications entirely via the **Notifications** option in the right-click context menu.
+
 ### AirPods not found
 
 - Make sure your AirPods are paired in **Settings > Bluetooth & devices**.

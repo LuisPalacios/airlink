@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using AirLink.Services;
 
 namespace AirLink;
@@ -15,7 +16,11 @@ public sealed class TrayApplicationContext : ApplicationContext
     private readonly ToolStripMenuItem _startupItem;
     private readonly ToolStripMenuItem _shortcutItem;
     private readonly ToolStripMenuItem _selectDeviceItem;
+    private readonly ToolStripMenuItem _notificationsItem;
+    private readonly System.Windows.Forms.Timer _blinkTimer;
     private bool _isConnected;
+    private bool _isBusy;
+    private bool _blinkState;
 
     public TrayApplicationContext()
     {
@@ -36,6 +41,14 @@ public sealed class TrayApplicationContext : ApplicationContext
         _shortcutItem.Click += OnShortcutClicked;
         UpdateShortcutMenuText();
 
+        _notificationsItem = new ToolStripMenuItem("Notifications")
+        {
+            Checked = RegistryService.IsNotificationsEnabled(),
+            CheckOnClick = true,
+        };
+        _notificationsItem.CheckedChanged += (_, _) =>
+            RegistryService.SetNotificationsEnabled(_notificationsItem.Checked);
+
         _startupItem = new ToolStripMenuItem("Run at Startup")
         {
             Checked = RegistryService.IsStartupEnabled(),
@@ -51,6 +64,7 @@ public sealed class TrayApplicationContext : ApplicationContext
         menu.Items.Add(helpItem);
         menu.Items.Add(_selectDeviceItem);
         menu.Items.Add(_shortcutItem);
+        menu.Items.Add(_notificationsItem);
         menu.Items.Add(_startupItem);
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add(exitItem);
@@ -59,11 +73,30 @@ public sealed class TrayApplicationContext : ApplicationContext
         {
             Visible = true,
             Text = "AirLink - Disconnected",
-            ContextMenuStrip = menu,
         };
 
-        // Left-click: toggle connection or show device picker
+        // Left-click: toggle connection. Right-click: show menu at cursor position.
+        _trayIcon.MouseClick += (s, e) =>
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Required for tray menu to dismiss when clicking outside
+                SetForegroundWindow(new HandleRef(null, menu.Handle));
+
+                var size = menu.GetPreferredSize(Size.Empty);
+                var pos = Cursor.Position;
+                menu.Show(pos.X - size.Width / 2, pos.Y - size.Height);
+            }
+        };
         _trayIcon.MouseClick += OnTrayIconClick;
+
+        // Blink timer for connect/disconnect transitions
+        _blinkTimer = new System.Windows.Forms.Timer { Interval = 400 };
+        _blinkTimer.Tick += (_, _) =>
+        {
+            _blinkState = !_blinkState;
+            _trayIcon.Icon = _iconService.GetIcon(_blinkState, _themeService.IsLightTheme);
+        };
 
         // Set initial icon based on current theme
         UpdateIcon();
@@ -104,6 +137,8 @@ public sealed class TrayApplicationContext : ApplicationContext
 
     private async Task ToggleConnectionAsync()
     {
+        if (_isBusy) return;
+
         try
         {
             // If no device configured, show picker first
@@ -114,11 +149,15 @@ public sealed class TrayApplicationContext : ApplicationContext
                     return;
             }
 
+            _isBusy = true;
+            StartBlinking();
+
             // Toggle connection
             if (_isConnected)
             {
                 await _bluetoothService.DisconnectAsync();
-                _trayIcon.ShowBalloonTip(
+                StopBlinking();
+                ShowNotification(
                     2000, "AirLink",
                     $"{_bluetoothService.SelectedDeviceName ?? "Device"} disconnected.",
                     ToolTipIcon.Info);
@@ -126,17 +165,18 @@ public sealed class TrayApplicationContext : ApplicationContext
             }
 
             var success = await _bluetoothService.ConnectAsync();
+            StopBlinking();
             var deviceName = _bluetoothService.SelectedDeviceName ?? "Device";
             if (success)
             {
-                _trayIcon.ShowBalloonTip(
+                ShowNotification(
                     2000, "AirLink",
                     $"Connected to {deviceName}.",
                     ToolTipIcon.Info);
             }
             else
             {
-                _trayIcon.ShowBalloonTip(
+                ShowNotification(
                     3000, "AirLink",
                     $"Could not connect to {deviceName}. Make sure it is nearby and available.",
                     ToolTipIcon.Error);
@@ -144,11 +184,36 @@ public sealed class TrayApplicationContext : ApplicationContext
         }
         catch (Exception ex)
         {
-            _trayIcon.ShowBalloonTip(
+            StopBlinking();
+            ShowNotification(
                 3000, "AirLink",
                 $"Connection error: {ex.Message}",
                 ToolTipIcon.Error);
         }
+        finally
+        {
+            // Keep busy a bit longer to prevent accidental immediate toggle
+            await Task.Delay(1500);
+            _isBusy = false;
+        }
+    }
+
+    private void ShowNotification(int timeout, string title, string text, ToolTipIcon icon)
+    {
+        if (_notificationsItem.Checked)
+            _trayIcon.ShowBalloonTip(timeout, title, text, icon);
+    }
+
+    private void StartBlinking()
+    {
+        _blinkState = _isConnected;
+        _blinkTimer.Start();
+    }
+
+    private void StopBlinking()
+    {
+        _blinkTimer.Stop();
+        UpdateIcon();
     }
 
     /// <summary>
@@ -222,7 +287,6 @@ public sealed class TrayApplicationContext : ApplicationContext
 
     private void UpdateSelectDeviceMenuText()
     {
-        _selectDeviceItem.Checked = _bluetoothService.HasSelectedDevice;
         _selectDeviceItem.Text = _bluetoothService.HasSelectedDevice
             ? $"Select Device ({_bluetoothService.SelectedDeviceName})"
             : "Select Device";
@@ -288,6 +352,8 @@ public sealed class TrayApplicationContext : ApplicationContext
     {
         if (disposing)
         {
+            _blinkTimer.Stop();
+            _blinkTimer.Dispose();
             _trayIcon.Visible = false;
             _trayIcon.Dispose();
             _hotkeyService.Dispose();
@@ -296,4 +362,7 @@ public sealed class TrayApplicationContext : ApplicationContext
         }
         base.Dispose(disposing);
     }
+
+    [DllImport("user32.dll")]
+    private static extern bool SetForegroundWindow(HandleRef hWnd);
 }

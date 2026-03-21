@@ -6,6 +6,8 @@ public static class RegistryService
 {
     private const string DefaultRunKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
     private const string DefaultAppName = "AirLink";
+    private const string AppSettingsKey = @"SOFTWARE\AirLink";
+    private const string NotificationsValueName = "Notifications";
 
     public static bool IsStartupEnabled() =>
         IsStartupEnabled(DefaultRunKey, DefaultAppName);
@@ -35,5 +37,19 @@ public static class RegistryService
         {
             key.DeleteValue(appName, throwOnMissingValue: false);
         }
+    }
+
+    public static bool IsNotificationsEnabled()
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(AppSettingsKey, false);
+        var value = key?.GetValue(NotificationsValueName);
+        // Default to enabled if not set
+        return value is not int intVal || intVal == 1;
+    }
+
+    public static void SetNotificationsEnabled(bool enabled)
+    {
+        using var key = Registry.CurrentUser.CreateSubKey(AppSettingsKey);
+        key.SetValue(NotificationsValueName, enabled ? 1 : 0, RegistryValueKind.DWord);
     }
 }

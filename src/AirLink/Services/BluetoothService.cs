@@ -116,11 +116,20 @@ public sealed class BluetoothService : IDisposable
                 SendBtAudioCommand(ksControl, KSPROPERTY_BTAUDIO.KSPROPERTY_ONESHOT_RECONNECT);
             }
 
-            // KsProperty triggers async connection — don't check status immediately.
-            // The ConnectionStatusChanged event will fire and update the icon.
-            // Return true optimistically; the event handler will correct if needed.
-            SetConnected(true);
-            return true;
+            // KsProperty triggers async connection — wait for it to establish
+            for (int i = 0; i < 5; i++)
+            {
+                await Task.Delay(1000);
+                if (_currentDevice.ConnectionStatus == BluetoothConnectionStatus.Connected)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  Connected after {i + 1}s");
+                    SetConnected(true);
+                    return true;
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine($"  Connection timed out. Status: {_currentDevice.ConnectionStatus}");
+            return false;
         }
         catch (Exception ex)
         {

@@ -5,13 +5,13 @@
 <h1 align="center">AirLink</h1>
 
 <p align="center">
-  <strong>One click. AirPods connected.</strong><br>
-  A tiny Windows tray app that does exactly one thing.
+  <strong>One click or Shortcut: AirPods connected</strong><br>
+  A tiny Windows tray app that does exactly one thing
 </p>
 
 ---
 
-Connecting AirPods on Windows means `Settings > Bluetooth > Connect` — every single time. AirLink skips all of that. No window. No installer. No configuration. Just a single `.exe` that lives in your system tray.
+Connecting AirPods on Windows means `Settings > Bluetooth > Connect` — every single time. This app skips all of that. No window. No installer. No configuration. Just a single `.exe`. Super light. Lives in your system tray.
 
 - Left-click → connect your AirPods
 - Right-click → options (help, device selection, hotkey, quit)
