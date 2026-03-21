@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.png" alt="AirLink" width="128" />
+  <img src="assets/logo-connected-lighttheme.svg" alt="AirLink" width="128" />
 </p>
 
 <h1 align="center">AirLink</h1>
