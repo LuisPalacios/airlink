@@ -5,6 +5,12 @@
 <h1 align="center">AirLink</h1>
 
 <p align="center">
+  <a href="https://github.com/LuisPalacios/airlink/actions/workflows/release.yaml">
+    <img src="https://github.com/LuisPalacios/airlink/actions/workflows/release.yaml/badge.svg" alt="Release" />
+  </a>
+</p>
+
+<p align="center">
   <strong>One click or Shortcut: AirPods connected</strong><br>
   A tiny Windows tray app that does exactly one thing
 </p>

@@ -1,3 +1,5 @@
+name: Release of AirLink
+
 on:
   push:
     tags:
@@ -29,5 +31,5 @@ jobs:
 
       - uses: softprops/action-gh-release@v2
         with:
-          draft: true
+          draft: false
           files: build/publish/*.zip
