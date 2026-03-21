@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>AirLink</RootNamespace>
+    <AssemblyName>AirLink</AssemblyName>
+    <ApplicationIcon>..\..\assets\app-connected-darktheme.ico</ApplicationIcon>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\assets\app-connected-darktheme.ico" LogicalName="AirLink.Icons.app-connected-darktheme.ico" />
+    <EmbeddedResource Include="..\..\assets\app-connected-lighttheme.ico" LogicalName="AirLink.Icons.app-connected-lighttheme.ico" />
+    <EmbeddedResource Include="..\..\assets\app-disconnected-darktheme.ico" LogicalName="AirLink.Icons.app-disconnected-darktheme.ico" />
+    <EmbeddedResource Include="..\..\assets\app-disconnected-lighttheme.ico" LogicalName="AirLink.Icons.app-disconnected-lighttheme.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Vanara.PInvoke.CoreAudio" Version="5.0.1" />
+  </ItemGroup>
+
+  <!-- Embed git version info (tag + short hash) into the assembly -->
+  <PropertyGroup>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+  <Target Name="SetGitVersion" BeforeTargets="CoreCompile">
+    <Exec Command="git describe --tags --always --dirty" ConsoleToMsBuild="true" StandardOutputImportance="low" IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitVersion" />
+    </Exec>
+    <PropertyGroup>
+      <GitVersion Condition="'$(GitVersion)' == ''">dev</GitVersion>
+    </PropertyGroup>
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyInformationalVersionAttribute">
+        <_Parameter1>$(GitVersion)</_Parameter1>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+
+</Project>

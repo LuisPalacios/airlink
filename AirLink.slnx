@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AirLink/AirLink.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AirLink.Tests/AirLink.Tests.csproj" />
+  </Folder>
+</Solution>
