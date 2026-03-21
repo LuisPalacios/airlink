@@ -2,7 +2,7 @@
 
 ## What is AirLink?
 
-AirLink is a lightweight Windows utility that makes connecting your Apple AirPods effortless. Windows does not provide a quick way to connect already-paired Bluetooth audio devices — AirLink solves this with a single click from the system tray.
+AirLink is a lightweight Windows utility that makes connecting your Apple AirPods effortless. Windows does not provide a quick way to connect already-paired Bluetooth audio devices — AirLink solves this with a shortcut or single click from the system tray.
 
 ## System Requirements
 
@@ -18,13 +18,13 @@ AirLink is a portable application — no installer required.
 2. Place it anywhere you like (e.g., `C:\bin\AirLink.exe`).
 3. Double-click to run.
 
-That's it. AirLink will appear in your system tray (the small icon area near the clock).
+That's it. AirLink will appear in your system tray.
 
 ## How to Use
 
 ### Connecting Your Device
 
-**Left-click** the AirLink tray icon. On the first click, a device picker dialog will show all your paired Bluetooth devices — select yours and click OK. AirLink will remember your choice and connect automatically on subsequent clicks.
+**Left-click** the AirLink tray icon. On the first click, a device picker dialog will show all your paired *audio Bluetooth devices* — select yours and click OK. AirLink will remember your choice and connect automatically on subsequent clicks.
 
 To switch to a different device later, right-click and select **Select Device**.
 
