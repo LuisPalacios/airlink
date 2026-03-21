@@ -12,15 +12,15 @@
 
 <p align="center">
   <strong>One click or Shortcut: AirPods connected</strong><br>
-  A tiny Windows tray app that does exactly one thing
+  A tiny app that does exactly one thing
 </p>
 
 ---
 
-Connecting AirPods on Windows means `Settings > Bluetooth > Connect` — every single time. This app skips all of that. No window. No installer. No configuration. Just a single `.exe`. Super light. Lives in your system tray.
+Connecting AirPods on Windows means `Settings > Bluetooth > Connect` — every single time. This app skips all of that. No window. No installer. No configuration. Just a single light `.exe`.
 
 - Left-click → connect your AirPods
-- Right-click → options (help, device selection, hotkey, quit)
+- Right-click → options
 - Adapts to light/dark theme automatically
 - Icon shows connection state in real time
 
