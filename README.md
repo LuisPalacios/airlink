@@ -11,12 +11,10 @@
 
 ---
 
-Connecting AirPods on Windows means `Settings > Bluetooth > Connect` — every single time. AirLink skips all of that. Left-click the tray icon, done.
-
-No window. No installer. No configuration. Just a single `.exe` in your system tray.
+Connecting AirPods on Windows means `Settings > Bluetooth > Connect` — every single time. AirLink skips all of that. No window. No installer. No configuration. Just a single `.exe` that lives in your system tray.
 
 - Left-click → connect your AirPods
-- Right-click → options (startup, hotkey, quit)
+- Right-click → options (help, device selection, hotkey, quit)
 - Adapts to light/dark theme automatically
 - Icon shows connection state in real time
 
@@ -26,7 +24,7 @@ No window. No installer. No configuration. Just a single `.exe` in your system t
 |---|---|
 | [User Guide](docs/user-guide.md) | Download, install, and use AirLink |
 | [Developer Guide](docs/developer-guide.md) | Build from source |
-| [Why AirLink](docs/why-airlink.md) | Why this exists and what else I considered |
+| [Why AirLink](docs/why-airlink.md) | Why did I do this |
 
 ## Build
 
