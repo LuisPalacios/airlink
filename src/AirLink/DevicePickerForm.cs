@@ -19,6 +19,9 @@ public sealed class DevicePickerForm : Form
     private string? _checkedDeviceId;
     private string? _checkedDeviceName;
 
+    // Remember position across opens (in-memory only)
+    private static Point? _lastLocation;
+
     /// <summary>The device ID to save (or null to clear).</summary>
     public string? SelectedDeviceId { get; private set; }
     public string? SelectedDeviceName { get; private set; }
@@ -36,7 +39,8 @@ public sealed class DevicePickerForm : Form
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;
-        StartPosition = FormStartPosition.CenterScreen;
+        StartPosition = _lastLocation.HasValue ? FormStartPosition.Manual : FormStartPosition.CenterScreen;
+        if (_lastLocation.HasValue) Location = _lastLocation.Value;
         Size = new Size(400, 340);
 
         _okButton = new Button
@@ -49,6 +53,7 @@ public sealed class DevicePickerForm : Form
         {
             SelectedDeviceId = _checkedDeviceId;
             SelectedDeviceName = _checkedDeviceName;
+            _lastLocation = Location;
             DialogResult = DialogResult.OK;
             Close();
         };
@@ -108,6 +113,7 @@ public sealed class DevicePickerForm : Form
 
     protected override void OnFormClosed(FormClosedEventArgs e)
     {
+        _lastLocation = Location;
         _refreshTimer.Stop();
         _refreshTimer.Dispose();
         base.OnFormClosed(e);
