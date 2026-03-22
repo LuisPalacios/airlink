@@ -24,7 +24,9 @@ Connecting AirPods on Windows means `Settings > Bluetooth > Connect` — every s
 - Adapts to light/dark theme automatically
 - Icon shows connection state in real time
 
-https://github.com/user-attachments/assets/a44f7090-1a47-41b0-bf17-498ce9cf8f51
+<p align="center" width="100%">
+<video src="https://github.com/user-attachments/assets/a44f7090-1a47-41b0-bf17-498ce9cf8f51" width="80%" controls></video>
+</p>
 
 ## Documentation
 
