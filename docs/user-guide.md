@@ -8,7 +8,7 @@ AirLink is a lightweight Windows utility that makes connecting your Apple AirPod
 
 - Windows 10 version 2004 (May 2020 Update) or later
 - Bluetooth adapter
-- Apple AirPods already paired in Windows Bluetooth settings
+- At least one Bluetooth audio device (e.g., Apple AirPods) already paired in Windows Bluetooth settings
 
 ## Installation
 
@@ -18,13 +18,15 @@ AirLink is a portable application — no installer required.
 2. Place it anywhere you like (e.g., `C:\bin\AirLink.exe`).
 3. Double-click to run.
 
+> **Windows SmartScreen warning:** Since AirLink is not code-signed, Windows may show a "Windows protected your PC" dialog the first time you run it. Click **More info** → **Run anyway** to proceed. This only happens once per download.
+
 That's it. AirLink will appear in your system tray.
 
 ## How to Use
 
 ### Connecting Your Device
 
-**Left-click** the AirLink tray icon. On the first click, a device picker dialog will show all your paired *audio Bluetooth devices* — select yours and click OK. AirLink will remember your choice and connect automatically on subsequent clicks.
+**Left-click** the AirLink tray icon. On the first click, a device picker dialog will show all your paired _audio Bluetooth devices_ — select yours and click OK. AirLink will remember your choice and connect automatically on subsequent clicks.
 
 To switch to a different device later, right-click and select **Select Device**.
 
@@ -32,14 +34,14 @@ To switch to a different device later, right-click and select **Select Device**.
 
 Right-click the tray icon to access these options:
 
-| Option | Description |
-| --- | --- |
-| **Help** | Shows app information, author, and GitHub link |
-| **Select Device** | Choose which paired Bluetooth device to connect |
-| **Shortcut** | Configure a global keyboard shortcut to toggle connection |
-| **Notifications** | Toggle balloon tip notifications on connect/disconnect |
-| **Run at Startup** | Toggle whether AirLink starts automatically with Windows |
-| **Exit** | Closes AirLink completely |
+| Option             | Description                                               |
+| ------------------ | --------------------------------------------------------- |
+| **Help**           | Shows app information, author, and GitHub link            |
+| **Select Device**  | Choose which paired Bluetooth device to connect           |
+| **Shortcut**       | Configure a global keyboard shortcut to toggle connection |
+| **Notifications**  | Toggle balloon tip notifications on connect/disconnect    |
+| **Run at Startup** | Toggle whether AirLink starts automatically with Windows  |
+| **Exit**           | Closes AirLink completely                                 |
 
 ### Keyboard Shortcut
 
@@ -62,7 +64,9 @@ The tray icon changes based on two factors:
 
 ### First Launch
 
-On first launch, AirLink automatically registers itself to start with Windows. You can disable this via the "Run at Startup" option in the context menu.
+On first launch, AirLink automatically enables "Run at Startup" so it starts with Windows. You can toggle this anytime via the context menu.
+
+> **Note:** If you move `AirLink.exe` to a different folder, just run it once from the new location. AirLink will detect the path change and update the startup registry entry automatically.
 
 ## Troubleshooting
 

@@ -15,6 +15,23 @@ public static class RegistryService
     public static void SetStartupEnabled(bool enabled) =>
         SetStartupEnabled(enabled, DefaultRunKey, DefaultAppName);
 
+    public static bool IsStartupPathCurrent() =>
+        IsStartupPathCurrent(DefaultRunKey, DefaultAppName);
+
+    public static bool IsStartupPathCurrent(string runKeyPath, string appName)
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(runKeyPath, false);
+        var stored = key?.GetValue(appName) as string;
+        if (stored is null) return true; // no key → nothing to fix
+
+        var currentPath = Environment.ProcessPath;
+        if (currentPath is null) return true;
+
+        // Registry value is stored quoted: "C:\path\AirLink.exe"
+        var storedPath = stored.Trim('"');
+        return string.Equals(storedPath, currentPath, StringComparison.OrdinalIgnoreCase);
+    }
+
     // Parameterized overloads for testability
     public static bool IsStartupEnabled(string runKeyPath, string appName)
     {

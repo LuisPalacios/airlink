@@ -114,6 +114,11 @@ public sealed class TrayApplicationContext : ApplicationContext
             RegistryService.SetStartupEnabled(true);
             _startupItem.Checked = true;
         }
+        // Fix stale startup path if the EXE was moved to a new location
+        else if (!RegistryService.IsStartupPathCurrent())
+        {
+            RegistryService.SetStartupEnabled(true);
+        }
 
         // Check if selected device is already connected (e.g., app restarted)
         _ = InitializeConnectionStatusAsync();

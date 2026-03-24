@@ -48,4 +48,27 @@ public class RegistryServiceTests : IDisposable
         RegistryService.SetStartupEnabled(false, TestRunKey, TestAppName);
         Assert.False(RegistryService.IsStartupEnabled(TestRunKey, TestAppName));
     }
+
+    [Fact]
+    public void IsStartupPathCurrent_ReturnsTrue_WhenNoKeyExists()
+    {
+        Assert.True(RegistryService.IsStartupPathCurrent(TestRunKey, TestAppName));
+    }
+
+    [Fact]
+    public void IsStartupPathCurrent_ReturnsTrue_AfterSetEnabled()
+    {
+        // SetStartupEnabled writes the current process path
+        RegistryService.SetStartupEnabled(true, TestRunKey, TestAppName);
+        Assert.True(RegistryService.IsStartupPathCurrent(TestRunKey, TestAppName));
+    }
+
+    [Fact]
+    public void IsStartupPathCurrent_ReturnsFalse_WhenPathDiffers()
+    {
+        // Write a fake path that doesn't match the running process
+        using var key = Registry.CurrentUser.OpenSubKey(TestRunKey, true)!;
+        key.SetValue(TestAppName, @"""C:\old\location\AirLink.exe""");
+        Assert.False(RegistryService.IsStartupPathCurrent(TestRunKey, TestAppName));
+    }
 }

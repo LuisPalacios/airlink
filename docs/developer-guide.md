@@ -16,7 +16,7 @@ Install [Windows Terminal](https://aka.ms/terminal) from the Microsoft Store or 
 
 ### IDE and SDK
 
-Install [Visual Studio Community 2026](https://visualstudio.microsoft.com/downloads/) with the **".NET desktop development"** workload selected in the Visual Studio Installer.
+Install [Visual Studio Community 2022](https://visualstudio.microsoft.com/downloads/) (or later) with the **".NET desktop development"** workload selected in the Visual Studio Installer.
 
 This workload includes:
 
@@ -48,7 +48,7 @@ Download from [imagemagick.org](https://imagemagick.org/script/download.php#wind
 
 ```shell
 git clone https://github.com/LuisPalacios/airlink.git
-cd AirLink
+cd airlink
 ```
 
 ### Generate Assets (Optional)
@@ -66,7 +66,7 @@ pwsh scripts/convert-assets.ps1
 dotnet build
 ```
 
-Or open `AirLink.slnx` in Visual Studio 2026 and build from the IDE.
+Or open `AirLink.slnx` in Visual Studio 2022 (or later) and build from the IDE.
 
 ### Run
 
