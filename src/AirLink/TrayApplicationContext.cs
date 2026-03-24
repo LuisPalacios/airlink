@@ -330,17 +330,78 @@ public sealed class TrayApplicationContext : ApplicationContext
     {
         var version = GitVersionInfo.Version;
 
-        MessageBox.Show(
-            "AirLink simplifies Bluetooth audio connectivity on Windows.\n" +
-            "Originally designed for Apple AirPods, it works with any Bluetooth audio device.\n\n" +
-            "Left-click the tray icon to connect or disconnect.\n" +
-            "Right-click for options.\n\n" +
-            $"Author: Luis Palacios Derqui\n" +
-            $"GitHub: {GitHubUrl}\n\n" +
-            $"{version}",
-            "AirLink - Help",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information);
+        using var form = new Form
+        {
+            Text = "AirLink - Help",
+            StartPosition = FormStartPosition.CenterScreen,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            MaximizeBox = false,
+            MinimizeBox = false,
+            ShowInTaskbar = false,
+            ClientSize = new Size(480, 280),
+        };
+
+        var icon = new PictureBox
+        {
+            Image = SystemIcons.Information.ToBitmap(),
+            SizeMode = PictureBoxSizeMode.AutoSize,
+            Location = new Point(16, 16),
+        };
+
+        var descLabel = new Label
+        {
+            Text = "AirLink simplifies Bluetooth audio connectivity on Windows.\n" +
+                   "Originally designed for Apple AirPods, it works with any\n" +
+                   "Bluetooth audio device.\n\n" +
+                   "Left-click the tray icon to connect or disconnect.\n" +
+                   "Right-click for options.",
+            AutoSize = true,
+            Location = new Point(64, 16),
+        };
+
+        var authorLabel = new Label
+        {
+            Text = "Author: Luis Palacios Derqui",
+            AutoSize = true,
+            Location = new Point(64, 160),
+        };
+
+        var linkLabel = new LinkLabel
+        {
+            Text = $"GitHub: {GitHubUrl}",
+            AutoSize = true,
+            Location = new Point(64, 182),
+        };
+        linkLabel.Links.Add("GitHub: ".Length, GitHubUrl.Length, GitHubUrl);
+        linkLabel.LinkClicked += (_, args) =>
+        {
+            if (args.Link?.LinkData is string url)
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url)
+                {
+                    UseShellExecute = true,
+                });
+            }
+        };
+
+        var versionLabel = new Label
+        {
+            Text = version,
+            AutoSize = true,
+            Location = new Point(64, 212),
+        };
+
+        var okButton = new Button
+        {
+            Text = "OK",
+            DialogResult = DialogResult.OK,
+            Location = new Point(393, 243),
+            Size = new Size(75, 25),
+        };
+        form.AcceptButton = okButton;
+
+        form.Controls.AddRange([icon, descLabel, authorLabel, linkLabel, versionLabel, okButton]);
+        form.ShowDialog();
     }
 
     private void OnExitClicked(object? sender, EventArgs e)
