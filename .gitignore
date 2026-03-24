@@ -90,6 +90,9 @@ $RECYCLE.BIN/
 *.user
 *.suo
 
+# Claude Code
+.claude/settings.local.json
+
 # Build and publish output
 build/
 publish/
