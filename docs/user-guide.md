@@ -8,7 +8,50 @@ AirLink is a lightweight Windows utility that makes connecting your Apple AirPod
 
 - Windows 10 version 2004 (May 2020 Update) or later
 - Bluetooth adapter
-- At least one Bluetooth audio device (e.g., Apple AirPods) already paired in Windows Bluetooth settings
+- At least one Bluetooth audio device (e.g., Apple AirPods) paired with Windows — new AirPods or a new PC? Start with [Pairing your AirPods with Windows](#pairing-your-airpods-with-windows-first-time-only)
+
+## Pairing your AirPods with Windows (first time only)
+
+AirLink connects AirPods that Windows already knows about. If these are new AirPods, or this is a new PC, pair them once using the steps below. You never need to repeat this — from then on, AirLink handles connecting.
+
+> Pairing with your PC does not unpair them from your iPhone, iPad or Mac. They stay paired to all of them.
+
+### Step 1 — Open the Bluetooth "Add device" screen in Windows
+
+**Windows 11:**
+
+1. Press `Win + I` to open **Settings**.
+2. Go to **Bluetooth & devices** and make sure **Bluetooth** is **On**.
+3. Click **Add device** (top of the page).
+4. In the "Add a device" dialog, choose **Bluetooth**.
+
+**Windows 10:** **Settings > Devices > Bluetooth & other devices** → turn Bluetooth **On** → **Add Bluetooth or other device** → **Bluetooth**.
+
+Leave this dialog open — Windows is now scanning for nearby devices.
+
+### Step 2 — Put your AirPods in pairing mode
+
+Put both AirPods in the charging case, **open the lid**, and keep the case close to your PC. Then, depending on your model:
+
+| Model | How to enter pairing mode |
+| --- | --- |
+| **AirPods 4**, **AirPods 5**, **AirPods Pro 3** (no button on the case) | **Double-tap the front of the case**, right on the status light, until it **flashes white** |
+| **AirPods 1st, 2nd, 3rd gen**, **AirPods Pro 1st gen**, **AirPods Pro 2** (Lightning or USB-C) | **Press and hold the setup button on the back of the case** until the status light **flashes white** |
+| **AirPods Max** | **Press and hold the noise control button** until the status light **flashes white** |
+
+Not sure which one you have? Look at the back of the case: if there is a small round button, use the "press and hold" method; if the back is smooth, use the double-tap.
+
+A **flashing white** light means the AirPods are ready to pair. If it flashes **amber** instead, close the lid, wait a few seconds, and try again.
+
+### Step 3 — Select your AirPods in Windows
+
+1. Back in the "Add a device" dialog, wait for your AirPods to appear (e.g., "Alex's AirPods"). Some models may briefly show up as **Headphones** before the real name loads.
+2. Click them. Windows pairs and connects them.
+3. When you see **Your device is ready to go!**, click **Done**.
+
+Your AirPods now appear under **Bluetooth & devices**. You can close Settings — you won't need it again. Continue with [Installation](#installation) and let AirLink do the connecting from now on.
+
+> **The AirPods never show up in the list?** On a new or freshly reinstalled PC this is almost always a missing Bluetooth driver. See [AirPods never appear when pairing](#airpods-never-appear-when-pairing-new-pc).
 
 ## Installation
 
@@ -76,16 +119,58 @@ AirLink shows brief notifications when connecting or disconnecting. The duration
 
 You can also disable AirLink notifications entirely via the **Notifications** option in the right-click context menu.
 
+### AirPods never appear when pairing (new PC)
+
+**Symptom:** the AirPods case flashes white (pairing mode), Bluetooth is **On** in Windows, but the **Add a device** dialog keeps searching and never lists them. Often it doesn't list _any_ device at all — not even phones or TVs around you.
+
+**Cause:** Windows ships with a fallback Bluetooth driver called **Generic Bluetooth Adapter**. It's good enough to turn the radio on, so everything _looks_ fine, but many Bluetooth chips — especially the Wi-Fi + Bluetooth combo cards built into motherboards and laptops (Realtek, MediaTek, Intel) — need their manufacturer's driver to load the chip's firmware. Without it, the radio is on but effectively deaf. This is common on a brand-new PC or after a clean Windows install, before all drivers are in place.
+
+**How to check (30 seconds):**
+
+1. Right-click **Start** → **Device Manager**.
+2. Expand **Bluetooth**.
+3. Look at the adapter's name:
+   - **Generic Bluetooth Adapter** → you're missing the manufacturer's driver. Continue below.
+   - A vendor name (e.g., **Realtek Bluetooth Adapter**, **Intel(R) Wireless Bluetooth(R)**, **MediaTek Bluetooth Adapter**) → the driver is fine; the problem is elsewhere (see [AirPods not found](#airpods-not-found)).
+
+**Fix:**
+
+1. Find your exact motherboard or laptop model (**Win + R** → `msinfo32` → look at **BaseBoard Product** or **System Model**).
+2. Go to the **manufacturer's support page** for that model (ASUS, MSI, Gigabyte, Dell, Lenovo, HP…) → **Drivers** → your Windows version → **Bluetooth**, and install it. While you're there, install any other missing drivers (chipset, Wi-Fi, audio). Avoid third-party "driver updater" sites.
+3. **Shut down** the PC completely and power it back on. A plain restart is not always enough — the Bluetooth chip loads its firmware when it powers up.
+4. Check Device Manager again: the adapter should now show the vendor name instead of "Generic Bluetooth Adapter".
+5. Repeat [Pairing your AirPods with Windows](#pairing-your-airpods-with-windows-first-time-only) — this time they appear within seconds.
+
+> **Real-world example.** A brand-new workstation with an onboard Wi-Fi 7 + Bluetooth combo card. Bluetooth was **On**, every Bluetooth service was running, and Windows showed no errors — yet AirPods 4 in pairing mode never appeared. A 30-second scan heard **zero** devices, Classic or Low Energy, even with phones nearby. Device Manager showed **Generic Bluetooth Adapter**: the Wi-Fi half of the card had its vendor driver, but the Bluetooth half didn't. After installing the motherboard maker's Bluetooth driver and power-cycling, the adapter came back as **Realtek Bluetooth Adapter**, its reported Bluetooth version went up one step (a sign that the real firmware had loaded), and the AirPods paired on the first try.
+>
+> **Lesson:** "Bluetooth is on" doesn't mean "Bluetooth works". On a new PC, check the adapter's driver name before blaming the AirPods.
+
+<details>
+<summary>For power users: check from PowerShell</summary>
+
+```powershell
+Get-PnpDevice -Class Bluetooth -PresentOnly |
+  Where-Object InstanceId -match '^(USB|PCI)' |
+  ForEach-Object {
+    Get-PnpDeviceProperty -InstanceId $_.InstanceId -KeyName DEVPKEY_Device_DriverProvider, DEVPKEY_Device_DriverInfPath, DEVPKEY_Device_LowerFilters |
+      Select-Object KeyName, Data
+  }
+```
+
+**Bad:** `DriverProvider` = `Microsoft`, `DriverInfPath` = `bth.inf`, and no `LowerFilters`. **Good:** a vendor `DriverProvider`, an `oemNN.inf` file and, for Realtek chips, a `RtkBtFilter…` lower filter.
+
+</details>
+
 ### AirPods not found
 
-- Make sure your AirPods are paired in **Settings > Bluetooth & devices**.
+- Make sure your AirPods are paired in **Settings > Bluetooth & devices**. If they aren't listed there, follow [Pairing your AirPods with Windows](#pairing-your-airpods-with-windows-first-time-only).
 - Open the AirPods case near your PC before clicking the tray icon.
 - Ensure Bluetooth is enabled on your PC.
 
 ### Connection fails
 
 - Close and reopen the AirPods case, then try again.
-- Remove and re-pair the AirPods in Windows Bluetooth settings.
+- Remove the AirPods in **Settings > Bluetooth & devices** (click **⋯** next to them → **Remove device**), then pair them again following [Pairing your AirPods with Windows](#pairing-your-airpods-with-windows-first-time-only).
 - Restart the Bluetooth adapter: toggle Bluetooth off and on in Windows Settings.
 
 ### Icon not visible in the system tray
